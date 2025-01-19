@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Data - Agri Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h1>Agri Dashboard</h1>
+            <ul class="nav-links">
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="soil-data.html">Soil Data</a></li>
+                <li><a href="weather-data.html">Weather Data</a></li>
+                <li><a href="disease-detection.html">Disease Detection</a></li>
+                <li><a href="yield-prediction.html">Yield Prediction</a></li>
+                <li><a href="resources.html">Resources</a></li>
+                <li><a href="news-alerts.html">News & Alerts</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="overview-header">
+                <h2>Weather Analysis</h2>
+                <span>Real-time weather monitoring and forecast</span>
+            </div>
+
+            <div class="metrics-grid cols-4">
+                <div class="metric-card">
+                    <div class="metric-value">24°C</div>
+                    <div class="metric-label">Temperature</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">65%</div>
+                    <div class="metric-label">Humidity</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">12km/h</div>
+                    <div class="metric-label">Wind Speed</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">0mm</div>
+                    <div class="metric-label">Precipitation</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Temperature Trends</h3>
+                <div class="chart-container">
+                    <canvas id="temperature-chart"></canvas>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 1.5rem;">
+                <h3>7-Day Forecast</h3>
+                <div class="forecast-grid">
+                    <div class="forecast-day">
+                        <div class="forecast-date">Mon</div>
+                        <div class="forecast-temp">24°C</div>
+                    </div>
+                    <div class="forecast-day">
+                        <div class="forecast-date">Tue</div>
+                        <div class="forecast-temp">23°C</div>
+                    </div>
+                    <div class="forecast-day">
+                        <div class="forecast-date">Wed</div>
+                        <div class="forecast-temp">25°C</div>
+                    </div>
+                    <div class="forecast-day">
+                        <div class="forecast-date">Thu</div>
+                        <div class="forecast-temp">22°C</div>
+                    </div>
+                    <div class="forecast-day">
+                        <div class="forecast-date">Fri</div>
+                        <div class="forecast-temp">21°C</div>
+                    </div>
+                    <div class="forecast-day">
+                        <div class="forecast-date">Sat</div>
+                        <div class="forecast-temp">23°C</div>
+                    </div>
+                    <div class="forecast-day">
+                        <div class="forecast-date">Sun</div>
+                        <div class="forecast-temp">24°C</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const initializeChart = () => {
+            const ctx = document.getElementById('temperature-chart')?.getContext('2d');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['6am', '9am', '12pm', '3pm', '6pm', '9pm'],
+                    datasets: [{
+                        label: 'Temperature (°C)',
+                        data: [18, 20, 24, 25, 23, 20],
+                        borderColor: '#2563eb',
+                        tension: 0.4
+                    }, {
+                        label: 'Humidity (%)',
+                        data: [70, 65, 60, 55, 60, 68],
+                        borderColor: '#22c55e',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        };
+
+        document.addEventListener('DOMContentLoaded', initializeChart);
+    </script>
+</body>
+</html> 

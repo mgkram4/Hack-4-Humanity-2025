@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yield Prediction - Agri Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h1>Agri Dashboard</h1>
+            <ul class="nav-links">
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="soil-data.html">Soil Data</a></li>
+                <li><a href="weather-data.html">Weather Data</a></li>
+                <li><a href="disease-detection.html">Disease Detection</a></li>
+                <li><a href="yield-prediction.html">Yield Prediction</a></li>
+                <li><a href="resources.html">Resources</a></li>
+                <li><a href="news-alerts.html">News & Alerts</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="overview-header">
+                <h2>Yield Prediction</h2>
+                <span>AI-powered crop yield forecasting</span>
+            </div>
+
+            <div class="metrics-grid cols-3">
+                <div class="metric-card">
+                    <div class="metric-value">4.2</div>
+                    <div class="metric-label">Expected Yield (tons/acre)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">+15%</div>
+                    <div class="metric-label">YoY Growth</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">85%</div>
+                    <div class="metric-label">Prediction Confidence</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Historical Yield Trends</h3>
+                <div class="chart-container">
+                    <canvas id="yield-chart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Factors Affecting Yield</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Factor</th>
+                            <th>Current Value</th>
+                            <th>Optimal Range</th>
+                            <th>Impact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Soil pH</td>
+                            <td>6.8</td>
+                            <td>6.5 - 7.0</td>
+                            <td>Positive</td>
+                        </tr>
+                        <tr>
+                            <td>Rainfall</td>
+                            <td>750mm</td>
+                            <td>700 - 900mm</td>
+                            <td>Neutral</td>
+                        </tr>
+                        <tr>
+                            <td>Temperature</td>
+                            <td>24°C</td>
+                            <td>20 - 25°C</td>
+                            <td>Positive</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const initializeChart = () => {
+            const ctx = document.getElementById('yield-chart')?.getContext('2d');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['2019', '2020', '2021', '2022', '2023', '2024 (Predicted)'],
+                    datasets: [{
+                        label: 'Yield (tons/acre)',
+                        data: [3.2, 3.5, 3.8, 3.6, 4.0, 4.2],
+                        borderColor: '#2563eb',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        };
+
+        document.addEventListener('DOMContentLoaded', initializeChart);
+    </script>
+</body>
+</html> 

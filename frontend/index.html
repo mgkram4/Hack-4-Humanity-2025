@@ -3,12 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Agri Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <h1>Home</h1>
-    <h3>Welcome to the home page</h3>
-    <p class="">below there will be a super cool dashboard with awesome insights.</p>
-    
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h1>Agri Dashboard</h1>
+            <ul class="nav-links">
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="soil-data.html">Soil Data</a></li>
+                <li><a href="weather-data.html">Weather Data</a></li>
+                <li><a href="disease-detection.html">Disease Detection</a></li>
+                <li><a href="yield-prediction.html">Yield Prediction</a></li>
+                <li><a href="resources.html">Resources</a></li>
+                <li><a href="news-alerts.html">News & Alerts</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="overview-header">
+                <h2>Overview</h2>
+                <span>Dashboard Summary</span>
+            </div>
+
+            <div class="metrics-grid cols-2">
+                <div class="card">
+                    <h3>Weather</h3>
+                    <div class="chart-container">
+                        <canvas id="weather-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Soil</h3>
+                    <div class="chart-container">
+                        <canvas id="soil-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Price</h3>
+                    <div class="chart-container">
+                        <canvas id="price-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Distribution</h3>
+                    <div id="distribution-chart">
+                        <div class="donut-chart"></div>
+                        <div class="donut-hole"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>News</h3>
+                <div class="alert-item">
+                    <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span>Alert 1</span>
+                </div>
+                <div class="alert-item">
+                    <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span>Alert 2</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Initialize charts
+        function initializeCharts() {
+            const chartConfigs = {
+                weather: {
+                    id: 'weather-chart',
+                    data: [20, 22, 25, 23, 21, 19],
+                    label: 'Temperature'
+                },
+                soil: {
+                    id: 'soil-chart',
+                    data: [45, 42, 40, 38, 43, 41],
+                    label: 'Moisture'
+                },
+                price: {
+                    id: 'price-chart',
+                    data: [100, 120, 115, 130, 125, 135],
+                    label: 'Market Price'
+                }
+            };
+
+            Object.values(chartConfigs).forEach(config => {
+                const ctx = document.getElementById(config.id)?.getContext('2d');
+                if (ctx) {
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                            datasets: [{
+                                label: config.label,
+                                data: config.data,
+                                borderColor: '#2563eb',
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        // Initialize all charts when the page loads
+        document.addEventListener('DOMContentLoaded', initializeCharts);
+    </script>
 </body>
 </html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News & Alerts - Agri Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .news-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .news-item {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .news-date {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .news-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.75rem;
+        }
+
+        .news-content {
+            color: #4b5563;
+            margin-bottom: 1rem;
+        }
+
+        .alert-priority {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .priority-high {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .priority-medium {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .priority-low {
+            background: #ecfdf5;
+            color: #059669;
+        }
+
+        .read-more {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .read-more:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h1>Agri Dashboard</h1>
+            <ul class="nav-links">
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="soil-data.html">Soil Data</a></li>
+                <li><a href="weather-data.html">Weather Data</a></li>
+                <li><a href="disease-detection.html">Disease Detection</a></li>
+                <li><a href="yield-prediction.html">Yield Prediction</a></li>
+                <li><a href="resources.html">Resources</a></li>
+                <li><a href="news-alerts.html">News & Alerts</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="overview-header">
+                <h2>News & Alerts</h2>
+                <span>Latest agricultural updates and alerts</span>
+            </div>
+
+            <div class="news-grid">
+                <div class="news-section">
+                    <div class="news-item">
+                        <span class="alert-priority priority-high">High Priority</span>
+                        <div class="news-date">March 20, 2024</div>
+                        <h3 class="news-title">Severe Weather Warning: Heavy Rainfall Expected</h3>
+                        <p class="news-content">Heavy rainfall predicted for the next 48 hours. Farmers advised to take necessary precautions to protect crops and ensure proper drainage.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+
+                    <div class="news-item">
+                        <span class="alert-priority priority-medium">Medium Priority</span>
+                        <div class="news-date">March 19, 2024</div>
+                        <h3 class="news-title">New Pest Control Guidelines Released</h3>
+                        <p class="news-content">Updated guidelines for managing common crop pests using integrated pest management techniques.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+
+                    <div class="news-item">
+                        <span class="alert-priority priority-low">Low Priority</span>
+                        <div class="news-date">March 18, 2024</div>
+                        <h3 class="news-title">Agricultural Market Update</h3>
+                        <p class="news-content">Weekly market prices and demand forecasts for major crops in the region.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+
+                <div class="alerts-section">
+                    <div class="card">
+                        <h3>Active Alerts</h3>
+                        <div class="chart-container">
+                            <canvas id="alerts-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const initializeChart = () => {
+            const ctx = document.getElementById('alerts-chart')?.getContext('2d');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['High Priority', 'Medium Priority', 'Low Priority'],
+                    datasets: [{
+                        data: [2, 3, 5],
+                        backgroundColor: ['#dc2626', '#d97706', '#059669'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+        };
+
+        document.addEventListener('DOMContentLoaded', initializeChart);
+    </script>
+</body>
+</html> 
