@@ -50,7 +50,7 @@ class WeatherService:
 
 # Usage example in FastAPI route:
 # @app.get("/weather/{city}")
-async def get_weather(city: str):
-    weather_service = WeatherService()
-    return await weather_service.get_weather_data(city)
-print(asyncio.run(get_weather("London")))
+# async def get_weather(city: str):
+#     weather_service = WeatherService()
+#     return await weather_service.get_weather_data(city)
+# print(asyncio.run(get_weather("London")))

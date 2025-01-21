@@ -88,5 +88,6 @@ class SoilService:
         requests.delete(f"{self.agro_polygon_url}/{polygon_id}", params=params.pop("polyid"))
         return processed_data
 
-soil_service = SoilService()
-print(soil_service.get_soil_data("London"))
+# Test code
+# soil_service = SoilService()
+# print(soil_service.get_soil_data("London"))
