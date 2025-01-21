@@ -2,12 +2,15 @@ import os
 from typing import Any, Dict
 
 import httpx
+import asyncio
 from fastapi import HTTPException
+from dotenv import load_dotenv
 
 
 class WeatherService:
     def __init__(self):
         # You should store this in environment variables
+        load_dotenv()
         self.api_key = os.getenv("WEATHER_API_KEY", "your_api_key_here")
         self.base_url = "http://api.openweathermap.org/data/2.5/weather"
 
@@ -47,6 +50,7 @@ class WeatherService:
 
 # Usage example in FastAPI route:
 # @app.get("/weather/{city}")
-# async def get_weather(city: str):
-#     weather_service = WeatherService()
-#     return await weather_service.get_weather_data(city)
+async def get_weather(city: str):
+    weather_service = WeatherService()
+    return await weather_service.get_weather_data(city)
+print(asyncio.run(get_weather("London")))
