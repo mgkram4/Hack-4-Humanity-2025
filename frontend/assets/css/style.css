@@ -10,18 +10,27 @@
 .dashboard-container {
     display: flex;
     min-height: 100vh;
-    min-width: 1200px; /* Minimum width for desktop */
+    min-width: auto; /* Remove fixed min-width */
 }
 
 /* Sidebar */
 .sidebar {
-    width: 280px; /* Slightly wider for desktop */
-    min-width: 280px; /* Prevent shrinking */
+    width: 280px;
     background-color: #1a1a1a;
     color: white;
     padding: 2.5rem;
     height: 100vh;
     position: fixed;
+    left: 0;
+    top: 0;
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000;
+    transform: translateX(-100%); /* Hide by default on all screens */
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar.active {
+    transform: translateX(0);
 }
 
 .sidebar h1 {
@@ -49,11 +58,11 @@
 
 /* Main Content */
 .main-content {
-    flex: 1;
-    padding: 2.5rem 3rem;
-    margin-left: 280px; /* Match sidebar width */
+    margin-left: 0;
+    padding: 1rem 1rem 1rem 4rem;
+    width: 100%;
     background-color: #f3f4f6;
-    min-width: 920px; /* Ensures content doesn't get too narrow */
+    min-width: auto; /* Remove fixed min-width */
 }
 
 /* Header */
@@ -62,8 +71,9 @@
 }
 
 .overview-header h2 {
-    color: #2563eb;
-    font-size: 2rem;
+    color: #1f2937;
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
 }
 
 .overview-header span {
@@ -93,8 +103,10 @@
 /* Metrics Grid */
 .metrics-grid {
     display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
     margin-bottom: 2rem;
+    margin-top: 2rem;
 }
 
 .metrics-grid.cols-3 {
@@ -109,6 +121,7 @@
 .metric-card {
     background: white;
     padding: 1rem;
+    
     border-radius: 0.5rem;
     text-align: center;
 }
@@ -149,16 +162,16 @@
 /* Forecast Grid */
 .forecast-grid {
     display: grid;
-    grid-template-columns: repeat(7, minmax(140px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1.5rem;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    margin-top: 1rem;
 }
 
 .forecast-day {
-    background: #f8fafc;
-    padding: 1rem;
-    border-radius: 0.5rem;
     text-align: center;
+    padding: 0.5rem;
+    background: #f8fafc;
+    border-radius: 0.25rem;
 }
 
 .forecast-date {
@@ -335,4 +348,412 @@
     height: 60px;
     margin-right: 1.5rem;
     padding: 1rem;
+}
+
+/* Location Selector */
+.location-selector {
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1rem;
+    max-width: 500px;
+}
+
+#city-input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+#city-input:focus {
+    border-color: #2563eb;
+    outline: none;
+}
+
+.search-button {
+    padding: 0.75rem 1.5rem;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search-button:hover {
+    background: #1d4ed8;
+}
+
+/* Quick Stats Section */
+.quick-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stat-icon {
+    font-size: 2rem;
+    padding: 1rem;
+    background: #f3f4f6;
+    border-radius: 0.5rem;
+}
+
+.stat-info h4 {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #1f2937;
+}
+
+.news-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.news-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+/* Update existing styles */
+#selected-city {
+    color: #2563eb;
+}
+
+/* Static Distribution Chart */
+.distribution-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 2rem auto;
+    border-radius: 50%;
+    background: conic-gradient(
+        #4ade80 0% 40%,
+        #facc15 40% 70%,
+        #3b82f6 70% 90%,
+        #94a3b8 90% 100%
+    );
+}
+
+.distribution-legend {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+.legend-color.corn { background-color: #4ade80; }
+.legend-color.wheat { background-color: #facc15; }
+.legend-color.soy { background-color: #3b82f6; }
+.legend-color.other { background-color: #94a3b8; }
+
+/* Agricultural Calendar */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.season-card {
+    background: #f8fafc;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid;
+}
+
+.season-card.spring { border-color: #4ade80; }
+.season-card.summer { border-color: #facc15; }
+.season-card.fall { border-color: #f97316; }
+.season-card.winter { border-color: #3b82f6; }
+
+.season-card h4 {
+    margin-bottom: 0.5rem;
+    color: #1f2937;
+}
+
+.season-tasks {
+    list-style: none;
+    padding: 0;
+}
+
+.season-tasks li {
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+    padding-left: 1rem;
+    position: relative;
+}
+
+.season-tasks li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #9ca3af;
+}
+
+/* Insights Section */
+.insights-section {
+    margin-top: 2rem;
+}
+
+/* Mobile Menu Button - Show on all screen sizes */
+.mobile-menu-btn {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1001;
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    display: block; /* Always show */
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .metrics-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .quick-stats {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .calendar-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    /* Show mobile menu button */
+    .mobile-menu-btn {
+        display: block;
+    }
+
+    /* Adjust main content */
+    .main-content {
+        margin-left: 0;
+        padding: 1rem 1rem 1rem 4rem;
+    }
+
+    /* Sidebar modifications for mobile */
+    .sidebar {
+        transform: translateX(-100%); /* Hide off-screen initially */
+        width: 280px;
+        max-width: 80%;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+        display: block !important; /* Force display */
+        visibility: visible !important; /* Ensure visibility */
+    }
+
+    .sidebar.active {
+        transform: translateX(0); /* Slide in when active */
+        display: block !important;
+        visibility: visible !important;
+    }
+
+    /* Location selector */
+    .location-selector {
+        flex-direction: column;
+    }
+
+    .search-button {
+        width: 100%;
+    }
+
+    /* Quick stats */
+    .quick-stats {
+        grid-template-columns: 1fr;
+    }
+
+    /* Metrics grid */
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Chart containers */
+    .chart-container {
+        height: 250px;
+    }
+
+    /* Distribution chart */
+    .distribution-container {
+        width: 150px;
+        height: 150px;
+    }
+
+    /* Distribution legend */
+    .distribution-legend {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Forecast grid */
+    .forecast-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+    }
+
+    /* Calendar grid */
+    .calendar-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Tables */
+    .data-table {
+        min-width: auto;
+        overflow-x: auto;
+        display: block;
+    }
+
+    /* Results grid */
+    .results-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Metric cards */
+    .metric-card {
+        padding: 0.75rem;
+    }
+
+    .metric-value {
+        font-size: 2rem;
+    }
+
+    /* Alert items */
+    .alert-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+
+/* Overlay - for all screen sizes */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    pointer-events: none;
+}
+
+.overlay.active {
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Hamburger Menu Icon */
+.hamburger {
+    width: 24px;
+    height: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.hamburger span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: white;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hamburger Animation */
+.mobile-menu-btn.active .hamburger span:first-child {
+    transform: translateY(9px) rotate(45deg);
+}
+
+.mobile-menu-btn.active .hamburger span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-btn.active .hamburger span:last-child {
+    transform: translateY(-9px) rotate(-45deg);
+}
+
+/* Additional mobile optimizations */
+@media (max-width: 480px) {
+    .overview-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .card {
+        padding: 1rem;
+    }
+
+    .stat-card {
+        padding: 1rem;
+    }
+
+    .stat-icon {
+        font-size: 1.5rem;
+        padding: 0.75rem;
+    }
+
+    .stat-value {
+        font-size: 1.1rem;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) {
+    .nav-links a {
+        padding: 0.75rem 0;
+        display: block;
+    }
+
+    .search-button {
+        padding: 1rem 1.5rem; /* Larger touch target */
+    }
 }

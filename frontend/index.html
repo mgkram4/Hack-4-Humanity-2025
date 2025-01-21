@@ -5,7 +5,308 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agri Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Layout */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background-color: #1a1a1a;
+            color: white;
+            padding: 2.5rem;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            transition: transform 0.3s ease-in-out;
+            z-index: 1000;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h1 {
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 1rem;
+        }
+
+        .nav-links a {
+            color: #a0aec0;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+            width: calc(100% - 280px);
+            background-color: #f3f4f6;
+        }
+
+        /* Location Selector */
+        .location-selector {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            max-width: 500px;
+        }
+
+        #city-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .search-button {
+            padding: 0.75rem 1.5rem;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+
+        /* Header */
+        .overview-header {
+            margin-bottom: 2rem;
+        }
+
+        .overview-header h2 {
+            color: #1f2937;
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .overview-header span {
+            color: #6b7280;
+        }
+
+        /* Quick Stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            padding: 1rem;
+            background: #f3f4f6;
+            border-radius: 0.5rem;
+        }
+
+        .stat-info h4 {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            color: #2563eb;
+            margin-bottom: 1rem;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* Distribution Chart */
+        #distribution-chart {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 2rem auto;
+        }
+
+        .donut-chart {
+            width: 100%;
+            height: 100%;
+            border: 30px solid #2563eb;
+            border-right-color: #22c55e;
+            border-bottom-color: #eab308;
+            border-left-color: #ef4444;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .donut-hole {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* News Container */
+        .alert-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            background: #f3f4f6;
+            border-radius: 0.5rem;
+        }
+
+        .alert-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 0.75rem;
+            color: #2563eb;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: none;
+        }
+
+        .hamburger {
+            width: 24px;
+            height: 20px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: white;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Overlay */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            pointer-events: none;
+        }
+
+        .overlay.active {
+            display: block;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 1rem;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .location-selector {
+                flex-direction: column;
+            }
+
+            .quick-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container {
+                height: 250px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="dashboard-container">
@@ -23,12 +324,41 @@
         </aside>
 
         <main class="main-content">
-            <div class="overview-header">
-                <h2>Overview</h2>
-                <span>Dashboard Summary</span>
+            <div class="location-selector">
+                <input type="text" id="city-input" placeholder="Enter US City">
+                <button class="search-button">Search</button>
             </div>
 
-            <div class="metrics-grid cols-2">
+            <div class="overview-header">
+                <h2>Agricultural Insights for <span id="selected-city">Select a city</span></h2>
+                <span>Local Agricultural Dashboard</span>
+            </div>
+
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-icon weather-icon">🌤️</div>
+                    <div class="stat-info">
+                        <h4>Current Weather</h4>
+                        <div class="stat-value" id="current-temp">--°F</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon soil-icon">🌱</div>
+                    <div class="stat-info">
+                        <h4>Soil Condition</h4>
+                        <div class="stat-value" id="soil-status">--</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon crop-icon">🌾</div>
+                    <div class="stat-info">
+                        <h4>Best Crops</h4>
+                        <div class="stat-value" id="recommended-crops">--</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metrics-grid">
                 <div class="card">
                     <h3>Weather</h3>
                     <div class="chart-container">
@@ -61,25 +391,21 @@
 
             <div class="card">
                 <h3>News</h3>
-                <div class="alert-item">
-                    <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
-                    <span>Alert 1</span>
-                </div>
-                <div class="alert-item">
-                    <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
-                    <span>Alert 2</span>
+                <div id="news-container">
+                    <!-- News items will be dynamically inserted here -->
                 </div>
             </div>
         </main>
     </div>
+
+    <button class="mobile-menu-btn">
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </button>
+    <div class="overlay"></div>
 
     <script>
         // Initialize charts
@@ -130,8 +456,69 @@
             });
         }
 
-        // Initialize all charts when the page loads
-        document.addEventListener('DOMContentLoaded', initializeCharts);
+        // Add news fetching functionality
+        async function fetchNews() {
+            try {
+                const response = await fetch('http://localhost:8000/api/news/news?category=agriculture');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const newsData = await response.json();
+                
+                const newsContainer = document.getElementById('news-container');
+                newsContainer.innerHTML = '';
+                
+                newsData.slice(0, 5).forEach(article => {
+                    const newsItem = `
+                        <div class="alert-item">
+                            <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <span>${article.title}</span>
+                        </div>
+                    `;
+                    newsContainer.innerHTML += newsItem;
+                });
+            } catch (error) {
+                console.error('Error fetching news:', error);
+                const newsContainer = document.getElementById('news-container');
+                newsContainer.innerHTML = `
+                    <div class="alert-item error">
+                        <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <span>Unable to load news at this time. Please try again later.</span>
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize all charts and fetch news when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Mobile menu functionality
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.overlay');
+
+            menuBtn?.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                menuBtn.classList.toggle('active');
+                overlay.classList.toggle('active');
+            });
+
+            overlay?.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+                menuBtn.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+
+            initializeCharts();
+            fetchNews();
+        });
     </script>
 </body>
 </html>

@@ -5,19 +5,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>News & Alerts - Agri Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-    <link rel="stylesheet" href="assets/css/style.css">
     <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Layout */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background-color: #1a1a1a;
+            color: white;
+            padding: 2.5rem;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            transition: transform 0.3s ease-in-out;
+            z-index: 1000;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h1 {
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 1rem;
+        }
+
+        .nav-links a {
+            color: #a0aec0;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+            width: calc(100% - 280px);
+            background-color: #f3f4f6;
+        }
+
+        /* Header */
+        .overview-header {
+            margin-bottom: 2rem;
+        }
+
+        .overview-header h2 {
+            color: #1f2937;
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .overview-header span {
+            color: #6b7280;
+        }
+
+        /* News Grid */
         .news-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
             gap: 1.5rem;
         }
 
+        /* News Items */
         .news-item {
             background: white;
             border-radius: 0.5rem;
             padding: 1.5rem;
             margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .news-item:hover {
+            transform: translateY(-2px);
         }
 
         .news-date {
@@ -36,8 +118,10 @@
         .news-content {
             color: #4b5563;
             margin-bottom: 1rem;
+            line-height: 1.5;
         }
 
+        /* Alert Priorities */
         .alert-priority {
             display: inline-block;
             padding: 0.25rem 0.75rem;
@@ -62,14 +146,128 @@
             color: #059669;
         }
 
+        /* Read More Link */
         .read-more {
             color: #2563eb;
             text-decoration: none;
             font-weight: 500;
+            display: inline-flex;
+            align-items: center;
         }
 
         .read-more:hover {
             text-decoration: underline;
+        }
+
+        /* Card */
+        .card {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            color: #2563eb;
+            margin-bottom: 1rem;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* Mobile Menu Button */
+        .mobile-menu-btn {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: none;
+        }
+
+        .hamburger {
+            width: 24px;
+            height: 20px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: white;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Overlay */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            pointer-events: none;
+        }
+
+        .overlay.active {
+            display: block;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1024px) {
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .alerts-section {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 1rem;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .news-item {
+                padding: 1rem;
+            }
+
+            .chart-container {
+                height: 250px;
+            }
         }
     </style>
 </head>
@@ -133,37 +331,62 @@
         </main>
     </div>
 
-    <script>
-        const initializeChart = () => {
-            const ctx = document.getElementById('alerts-chart')?.getContext('2d');
-            if (!ctx) return;
+    <button class="mobile-menu-btn">
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </button>
+    <div class="overlay"></div>
 
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['High Priority', 'Medium Priority', 'Low Priority'],
-                    datasets: [{
-                        data: [2, 3, 5],
-                        backgroundColor: ['#dc2626', '#d97706', '#059669'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                padding: 20
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Mobile menu functionality
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.overlay');
+
+            menuBtn?.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                menuBtn.classList.toggle('active');
+                overlay.classList.toggle('active');
+            });
+
+            overlay?.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+                menuBtn.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+
+            // Initialize alerts chart
+            const ctx = document.getElementById('alerts-chart')?.getContext('2d');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['High Priority', 'Medium Priority', 'Low Priority'],
+                        datasets: [{
+                            data: [2, 3, 5],
+                            backgroundColor: ['#dc2626', '#d97706', '#059669'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20
+                                }
                             }
                         }
                     }
-                }
-            });
-        };
-
-        document.addEventListener('DOMContentLoaded', initializeChart);
+                });
+            }
+        });
     </script>
 </body>
-</html> 
+</html>
