@@ -7,7 +7,6 @@ class SoilService:
     def __init__(self):
         # You should store this in environment variables
         load_dotenv()
-
         self.agro_api_key = os.getenv("AGRO_API_KEY", "your_api_key_here")
         self.agro_soil_url = "http://api.agromonitoring.com/agro/1.0/soil"
         self.agro_polygon_url = "http://api.agromonitoring.com/agro/1.0/polygons"
@@ -39,10 +38,10 @@ class SoilService:
             [lon - 0.01, lat - 0.01],  # Bottom-left
             [lon - 0.01, lat + 0.01]   # Close the polygon
         ]
-        print(square)
         headers = { "Content-Type": "application/json" }
         params = {
             "appid": self.agro_api_key,
+            "duplicated": "true"
         }
         
         # GeoJSON data
@@ -70,7 +69,7 @@ class SoilService:
         polygon_id = self.get_polygonId(city)
         params = {
             "polyid": polygon_id,
-            "appid": self.agro_api_key
+            "appid": self.agro_api_key,
         }
 
         # fetch data
@@ -85,9 +84,10 @@ class SoilService:
         }
 
         # delete the polygon to save api calls
-        requests.delete(f"{self.agro_polygon_url}/{polygon_id}", params=params.pop("polyid"))
+        params.pop("polyid")
+        requests.delete(f"{self.agro_polygon_url}/{polygon_id}", params=params)
         return processed_data
 
 # Test code
-# soil_service = SoilService()
-# print(soil_service.get_soil_data("London"))
+soil_service = SoilService()
+print(soil_service.get_soil_data("London"))
