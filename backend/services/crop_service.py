@@ -39,12 +39,12 @@ class CropService:
 
         processed_data = {
             "toxicity": response["data"]["main_species"]["specifications"]["toxicity"],
-            "light_needed": response["data"]["main_species"]["growth"]["light"],
-            "air_humidity_needed": response["data"]["main_species"]["growth"]["atmospheric_humidity"],
+            "light_needs": response["data"]["main_species"]["growth"]["light"],
+            "air_humidity_needs": response["data"]["main_species"]["growth"]["atmospheric_humidity"],
             "soil_ph_range": [response["data"]["main_species"]["growth"]["ph_minimum"], response["data"]["main_species"]["growth"]["ph_maximum"]],
         }
         return processed_data
 
 # Test code
-# crop_service = CropService()
-# print(crop_service.get_plant_data("Beach Strawberry"))
+crop_service = CropService()
+print(crop_service.get_plant_data("Beach Strawberry"))
