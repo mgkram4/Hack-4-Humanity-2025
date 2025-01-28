@@ -3,7 +3,7 @@ import torch.optim as optim
 import torch.nn as nn
 from models.resource_optimization.model import ResourceOptimizationModels
 from models.resource_optimization.preprocessing import ResourceDataPreprocessor
-from utils.data_loader import DataLoader
+from torch.utils.data import DataLoader
 import joblib
 
 async def train_models():

@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from sklearn.ensemble import RandomForestRegressor
 import xgboost as xgb
+import joblib
 
 class LSTMModel(nn.Module):
     def __init__(self, input_size=6, hidden_size=64):

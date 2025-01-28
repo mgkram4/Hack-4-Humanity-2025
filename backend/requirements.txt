@@ -22,3 +22,4 @@ joblib
 scikit-learn
 torch
 xgboost
+pillow
