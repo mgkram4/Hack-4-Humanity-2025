@@ -757,3 +757,57 @@
         padding: 1rem 1.5rem; /* Larger touch target */
     }
 }
+
+
+/* assets/css/style.css */
+.input-container {
+    margin: 20px 0;
+    display: flex;
+    gap: 10px;
+}
+
+.input-container input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.analyze-btn {
+    padding: 12px 24px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.analyze-btn:hover {
+    background: #1d4ed8;
+}
+
+.recommendation-content {
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+.positive {
+    color: #059669;
+    font-weight: 600;
+}
+
+.warning {
+    color: #d97706;
+    font-weight: 600;
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1f2937;
+}
+
+/* Add these to your existing styles */

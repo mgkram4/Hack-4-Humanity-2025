@@ -1,56 +1,105 @@
 import os
+from datetime import datetime
 from typing import Any, Dict
 
 import httpx
-import asyncio
-from fastapi import HTTPException
 from dotenv import load_dotenv
+from fastapi import HTTPException
 
 
 class WeatherService:
     def __init__(self):
-        # You should store this in environment variables
         load_dotenv()
-        self.api_key = os.getenv("WEATHER_API_KEY", "your_api_key_here")
-        self.base_url = "http://api.openweathermap.org/data/2.5/weather"
+        self.api_key = os.getenv("WEATHER_API_KEY")
+        self.base_url = "http://api.openweathermap.org/data/2.5"
 
     async def get_weather_data(self, city: str) -> Dict[Any, Any]:
         """
-        Get weather data for a specific city
-        Returns formatted data suitable for ML processing
+        Get current weather data for a specific city
         """
         try:
             async with httpx.AsyncClient() as client:
                 params = {
                     "q": city,
                     "appid": self.api_key,
-                    "units": "metric"  # Use metric units
+                    "units": "metric"
                 }
+                response = await client.get(f"{self.base_url}/weather", params=params)
+                response.raise_for_status()
+                data = response.json()
                 
-                response = await client.get(self.base_url, params=params)
+                # Create hourly data for the chart (using current data as we don't have hourly in free tier)
+                current_hour = datetime.now().hour
+                hourly_data = []
+                for i in range(24):
+                    hour = (current_hour + i) % 24
+                    hourly_data.append({
+                        "time": f"{hour:02d}:00",
+                        "temperature": data["main"]["temp"],
+                        "humidity": data["main"]["humidity"]
+                    })
+
+                # Format the response to match frontend expectations
+                return {
+                    "temperature": round(data["main"]["temp"]),
+                    "humidity": data["main"]["humidity"],
+                    "windSpeed": round(data["wind"]["speed"] * 3.6, 1),  # Convert m/s to km/h
+                    "precipitation": 0,  # Not available in current weather
+                    "hourlyData": hourly_data
+                }
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    async def get_forecast_data(self, city: str) -> Dict[Any, Any]:
+        """
+        Get 7-day weather forecast for a specific city
+        """
+        try:
+            async with httpx.AsyncClient() as client:
+                params = {
+                    "q": city,
+                    "appid": self.api_key,
+                    "units": "metric",
+                    "cnt": 7
+                }
+                response = await client.get(f"{self.base_url}/forecast/daily", params=params)
                 response.raise_for_status()
                 data = response.json()
 
-                # Format data for ML processing
-                processed_data = {
-                    "temperature": data["main"]["temp"],
-                    "humidity": data["main"]["humidity"],
-                    "pressure": data["main"]["pressure"],
-                    "wind_speed": data["wind"]["speed"],
-                    "weather_condition": data["weather"][0]["main"],
-                    "timestamp": data["dt"]
-                }
+                # Format the forecast data for the frontend
+                forecast = []
+                for day in data["list"]:
+                    date = datetime.fromtimestamp(day["dt"]).strftime("%a")
+                    forecast.append({
+                        "date": date,
+                        "temperature": round(day["temp"]["day"])
+                    })
                 
-                return processed_data
+                return forecast
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
 
-        except httpx.HTTPError as e:
-            raise HTTPException(status_code=500, detail=f"Weather API error: {str(e)}")
-        except KeyError as e:
-            raise HTTPException(status_code=500, detail=f"Data processing error: {str(e)}")
-
-# Usage example in FastAPI route:
-# @app.get("/weather/{city}")
-# async def get_weather(city: str):
-#     weather_service = WeatherService()
-#     return await weather_service.get_weather_data(city)
-# print(asyncio.run(get_weather("London")))
+    async def get_weather_metrics(self) -> Dict[Any, Any]:
+        """
+        Get weather metrics for dashboard
+        """
+        try:
+            # Example metrics - you might want to customize this
+            metrics = {
+                "current_temperature": 24,
+                "humidity": 65,
+                "wind_speed": 12,
+                "precipitation": 0,
+                "forecast": [
+                    {"day": "Mon", "temp": 24},
+                    {"day": "Tue", "temp": 23},
+                    {"day": "Wed", "temp": 25},
+                    {"day": "Thu", "temp": 22},
+                    {"day": "Fri", "temp": 21},
+                    {"day": "Sat", "temp": 23},
+                    {"day": "Sun", "temp": 24}
+                ]
+            }
+            return metrics
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))

@@ -2,25 +2,63 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soil Data - Agri Dashboard</title>
+    <title>NASA Soil Data Analysis</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <style>
-        /* Base styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
         }
-
-        /* Layout */
+        p {
+            font-size: 1.2rem;
+            color: #ffffff;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin: 20px 0;
+        }
+        .chart-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .chart {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .metrics p {
+            margin: 10px 0;
+            font-size: 1.1rem;
+        }
+        .error { color: #dc2626; }
+        canvas {
+            width: 100% !important;
+            height: 300px !important;
+            margin-top: 20px;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+            color: #666;
+        }
         .dashboard-container {
             display: flex;
             min-height: 100vh;
         }
-
-        /* Sidebar */
         .sidebar {
             width: 280px;
             background-color: #1a1a1a;
@@ -34,216 +72,111 @@
             z-index: 1000;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
         }
-
-        .sidebar.active {
-            transform: translateX(0);
-        }
-
         .sidebar h1 {
             margin-bottom: 2rem;
             font-size: 1.5rem;
         }
-
         .nav-links {
             list-style: none;
         }
-
         .nav-links li {
             margin-bottom: 1rem;
         }
-
         .nav-links a {
             color: #a0aec0;
             text-decoration: none;
             transition: color 0.3s;
         }
-
         .nav-links a:hover {
             color: white;
         }
-
-        /* Main Content */
-        .main-content {
+        .container {
             margin-left: 280px;
-            padding: 2rem;
             width: calc(100% - 280px);
-            background-color: #f3f4f6;
         }
-
-        /* Header */
-        .overview-header {
-            margin-bottom: 2rem;
-        }
-
-        .overview-header h2 {
-            color: #1f2937;
-            font-size: 1.75rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .overview-header span {
-            color: #6b7280;
-        }
-
-        /* Cards */
-        .card {
-            background: white;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            margin-bottom: 1.5rem;
-        }
-
-        .card h3 {
-            color: #2563eb;
-            margin-bottom: 1rem;
-        }
-
-        /* Metrics Grid */
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-            margin-top: 2rem;
-        }
-
-        /* Chart Container */
-        .chart-container {
-            height: 300px;
-            position: relative;
-        }
-
-        /* Metric Card */
-        .metric-card {
-            background: white;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            text-align: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .metric-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #2563eb;
-        }
-
-        .metric-label {
-            color: #6b7280;
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-        }
-
-        /* Data Table */
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 0.5rem;
-            overflow: hidden;
-        }
-
-        .data-table th,
-        .data-table td {
-            padding: 1.25rem;
-            text-align: left;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .data-table th {
-            background: #f3f4f6;
-            font-weight: 600;
-            color: #374151;
-        }
-
-        /* Mobile Menu Button */
-        .mobile-menu-btn {
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 1001;
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            display: none;
-        }
-        
-        @media (max-width: 768px) {
-            .mobile-menu-btn {
-                display: block;
-            }
-        }
-
-        .hamburger {
-            width: 24px;
-            height: 20px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .hamburger span {
-            display: block;
-            width: 100%;
-            height: 2px;
-            background-color: white;
-            transition: all 0.3s ease-in-out;
-        }
-
-        /* Overlay */
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-            pointer-events: none;
-        }
-
-        .overlay.active {
-            display: block;
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        /* Responsive Styles */
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
             }
-
-            .main-content {
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .container {
                 margin-left: 0;
                 width: 100%;
-                padding: 1rem;
             }
-            .metrics-grid {
-                grid-template-columns: 1fr;
-            }
+        }
+        .mobile-menu-btn {
+            display: none;
+        }
 
-            .main-content {
-                padding: 1rem;
-            }
-
-            .data-table {
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
                 display: block;
-                overflow-x: auto;
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 1001;
+                background: #2563eb;
+                color: white;
+                border: none;
+                padding: 0.75rem;
+                border-radius: 0.5rem;
+                cursor: pointer;
+            }
+
+            .hamburger {
+                width: 24px;
+                height: 20px;
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+
+            .hamburger span {
+                display: block;
+                width: 100%;
+                height: 2px;
+                background-color: white;
+                transition: all 0.3s ease-in-out;
+            }
+
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+                opacity: 0;
+                transition: opacity 0.3s ease-in-out;
+                pointer-events: none;
+            }
+
+            .overlay.active {
+                display: block;
+                opacity: 1;
+                pointer-events: auto;
             }
         }
     </style>
 </head>
 <body>
-    <div class="dashboard-container">
+    <button class="mobile-menu-btn">
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </button>
+    <div class="overlay"></div>
+
+    <div class="container">
+
+
         <aside class="sidebar">
             <h1>Agri Dashboard</h1>
             <ul class="nav-links">
@@ -256,120 +189,189 @@
                 <li><a href="news-alerts.html">News & Alerts</a></li>
             </ul>
         </aside>
+        <h1>NASA Soil Data Analysis</h1>
+        <h6>7-day soil monitoring using NASA POWER data</h6>
 
-        <main class="main-content">
-            <div class="overview-header">
-                <h2>Soil Data Analysis</h2>
-                <span>Real-time soil monitoring and analysis</span>
-            </div>
+        <select id="locationSelect">
+            <option value="34.0522,-118.2437">Los Angeles, USA</option>
+            <option value="31.2304,121.4737">Shanghai, China</option>
+            <option value="-23.5505,-46.6333">São Paulo, Brazil</option>
+            <option value="30.0444,31.2357">Cairo, Egypt</option>
+            <option value="28.6139,77.2090">New Delhi, India</option>
+            <option value="36.7378,-119.7871" selected>Fresno, USA</option>
+            <option value="35.6762,139.6503">Tokyo, Japan</option>
+            <option value="52.5200,13.4050">Berlin, Germany</option>
+            <option value="-33.8688,151.2093">Sydney, Australia</option>
+        </select>
 
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <div class="metric-value">6.8</div>
-                    <div class="metric-label">pH Level</div>
+        <div class="chart-container">
+            <div class="chart">
+                <h3>Current Soil Moisture (%)</h3>
+                <div class="metrics" id="moistureMetrics">
+                    <p>Surface: <span id="surfaceMoisture">--</span></p>
+                    <p>Root Zone: <span id="rootMoisture">--</span></p>
+                    <p>Profile: <span id="deepMoisture">--</span></p>
                 </div>
-                <div class="metric-card">
-                    <div class="metric-value">42%</div>
-                    <div class="metric-label">Moisture</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value">23°C</div>
-                    <div class="metric-label">Temperature</div>
-                </div>
+                <canvas id="moistureChart"></canvas>
             </div>
-
-            <div class="card">
-                <h3>Soil Composition Trends</h3>
-                <div class="chart-container">
-                    <canvas id="soil-composition-chart"></canvas>
+            <div class="chart">
+                <h3>Current Soil Temperature (°C)</h3>
+                <div class="metrics" id="tempMetrics">
+                    <p>Surface: <span id="surfaceTemp">--</span></p>
+                    <p>Subsurface: <span id="subsurfaceTemp">--</span></p>
                 </div>
+                <canvas id="temperatureChart"></canvas>
             </div>
-
-            <div class="card">
-                <h3>Recent Soil Tests</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Location</th>
-                            <th>pH Level</th>
-                            <th>Nitrogen</th>
-                            <th>Phosphorus</th>
-                            <th>Potassium</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>2024-03-15</td>
-                            <td>Field A</td>
-                            <td>6.8</td>
-                            <td>40 mg/kg</td>
-                            <td>35 mg/kg</td>
-                            <td>180 mg/kg</td>
-                        </tr>
-                        <tr>
-                            <td>2024-03-14</td>
-                            <td>Field B</td>
-                            <td>7.2</td>
-                            <td>38 mg/kg</td>
-                            <td>32 mg/kg</td>
-                            <td>175 mg/kg</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </main>
+        </div>
+        <div id="error" class="error"></div>
     </div>
 
-    <button class="mobile-menu-btn">
-        <div class="hamburger">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    </button>
-    <div class="overlay"></div>
-
     <script>
-        // Initialize chart
-        const initializeChart = () => {
-            const ctx = document.getElementById('soil-composition-chart')?.getContext('2d');
-            if (!ctx) return;
+        let moistureChart, temperatureChart;
 
-            const chartData = {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [
-                    {
-                        label: 'Nitrogen',
-                        data: [35, 38, 40, 42, 40, 43],
-                        borderColor: '#2563eb',
-                        tension: 0.4
-                    },
-                    {
-                        label: 'Phosphorus',
-                        data: [30, 32, 31, 35, 34, 36],
-                        borderColor: '#22c55e',
-                        tension: 0.4
-                    }
-                ]
-            };
+        function initCharts() {
+            const moistureCtx = document.getElementById('moistureChart').getContext('2d');
+            const tempCtx = document.getElementById('temperatureChart').getContext('2d');
 
-            const chartOptions = {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom' }
-                }
-            };
-
-            new Chart(ctx, {
+            moistureChart = new Chart(moistureCtx, {
                 type: 'line',
-                data: chartData,
-                options: chartOptions
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Surface',
+                            borderColor: '#4361ee',
+                            data: []
+                        },
+                        {
+                            label: 'Root Zone',
+                            borderColor: '#4cc9f0',
+                            data: []
+                        },
+                        {
+                            label: 'Profile',
+                            borderColor: '#7209b7',
+                            data: []
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Soil Moisture Trends (%)'
+                        }
+                    }
+                }
             });
-        };
 
-        // Mobile menu functionality
+            temperatureChart = new Chart(tempCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Surface',
+                            borderColor: '#f72585',
+                            data: []
+                        },
+                        {
+                            label: 'Subsurface',
+                            borderColor: '#ff9e00',
+                            data: []
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Soil Temperature Trends (°C)'
+                        }
+                    }
+                }
+            });
+        }
+
+        async function fetchSoilData(coordinates) {
+            try {
+                document.getElementById('error').textContent = '';
+                const [lat, lon] = coordinates.split(',');
+                
+                const endDate = new Date();
+                const startDate = new Date();
+                startDate.setDate(endDate.getDate() - 7);
+                
+                const formatDate = (date) => date.toISOString().split('T')[0].replace(/-/g, '');
+                
+                const url = `https://power.larc.nasa.gov/api/temporal/daily/point?parameters=GWETPROF,GWETROOT,GWETTOP,TSOIL1,TSOIL2&community=AG&longitude=${lon}&latitude=${lat}&start=${formatDate(startDate)}&end=${formatDate(endDate)}&format=JSON`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                const dates = Object.keys(data.properties.parameter.TSOIL1);
+                const latestDate = dates[dates.length - 1];
+                
+                updateMetrics(data.properties.parameter, latestDate);
+                updateCharts(data.properties.parameter, dates);
+                
+            } catch (err) {
+                console.error(err);
+                document.getElementById('error').textContent = 'Error fetching data. Please try again later.';
+                resetMetrics();
+            }
+        }
+
+        function updateMetrics(params, date) {
+
+            
+            const fillValue = -999;
+            document.getElementById('surfaceMoisture').textContent = params.GWETTOP[date] > fillValue ? `${(params.GWETTOP[date] * 100).toFixed(1)}%` : 'No data';
+            document.getElementById('rootMoisture').textContent = params.GWETROOT[date] > fillValue ? `${(params.GWETROOT[date] * 100).toFixed(1)}%` : 'No data';
+            document.getElementById('deepMoisture').textContent = params.GWETPROF[date] > fillValue ? `${(params.GWETPROF[date] * 100).toFixed(1)}%` : 'No data';
+            document.getElementById('surfaceTemp').textContent = params.TSOIL1[date] > fillValue ? `${params.TSOIL1[date].toFixed(1)}°C` : 'No data';
+            document.getElementById('subsurfaceTemp').textContent = params.TSOIL2[date] > fillValue ? `${params.TSOIL2[date].toFixed(1)}°C` : 'No data';
+        }
+
+        function updateCharts(params, dates) {
+            const formatDate = (dateStr) => {
+                const year = dateStr.slice(0, 4);
+                const month = dateStr.slice(4, 6);
+                const day = dateStr.slice(6, 8);
+                return `${month}/${day}`;
+            };
+
+            const fillValue = -999;
+            const labels = dates.map(formatDate);
+            
+            moistureChart.data.labels = labels;
+            moistureChart.data.datasets[0].data = dates.map(date => params.GWETTOP[date] > fillValue ? (params.GWETTOP[date] * 100).toFixed(1) : null);
+            moistureChart.data.datasets[1].data = dates.map(date => params.GWETROOT[date] > fillValue ? (params.GWETROOT[date] * 100).toFixed(1) : null);
+            moistureChart.data.datasets[2].data = dates.map(date => params.GWETPROF[date] > fillValue ? (params.GWETPROF[date] * 100).toFixed(1) : null);
+            moistureChart.update();
+
+            temperatureChart.data.labels = labels;
+            temperatureChart.data.datasets[0].data = dates.map(date => params.TSOIL1[date] > fillValue ? params.TSOIL1[date].toFixed(1) : null);
+            temperatureChart.data.datasets[1].data = dates.map(date => params.TSOIL2[date] > fillValue ? params.TSOIL2[date].toFixed(1) : null);
+            temperatureChart.update();
+        }
+
+        function resetMetrics() {
+            document.getElementById('surfaceMoisture').textContent = '--';
+            document.getElementById('rootMoisture').textContent = '--';
+            document.getElementById('deepMoisture').textContent = '--';
+            document.getElementById('surfaceTemp').textContent = '--';
+            document.getElementById('subsurfaceTemp').textContent = '--';
+        }
+
+        document.getElementById('locationSelect').addEventListener('change', (e) => {
+            fetchSoilData(e.target.value);
+        });
+
         document.addEventListener('DOMContentLoaded', () => {
             const menuBtn = document.querySelector('.mobile-menu-btn');
             const sidebar = document.querySelector('.sidebar');
@@ -387,8 +389,12 @@
                 overlay.classList.remove('active');
             });
 
-            initializeChart();
+            // Initialize charts and fetch initial data
+            initCharts();
+            fetchSoilData(document.getElementById('locationSelect').value);
         });
+
+
     </script>
 </body>
-</html>
+</html> 
