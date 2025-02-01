@@ -1,93 +1,59 @@
 import os
-from dotenv import load_dotenv
 
 import requests
+from dotenv import load_dotenv
+
 
 class SoilService:
     def __init__(self):
-        # You should store this in environment variables
         load_dotenv()
-
-        self.agro_api_key = os.getenv("AGRO_API_KEY", "your_api_key_here")
-        self.agro_soil_url = "http://api.agromonitoring.com/agro/1.0/soil"
-        self.agro_polygon_url = "http://api.agromonitoring.com/agro/1.0/polygons"
-
         self.geocoding_api_key = os.getenv("GEOCODING_API_KEY", "your_api_key_here")
         self.geocoding_base_url = "https://geocode.maps.co/search"
-
-    # convert city into coordinates (latitude, longitude) using Geocoding API
-    def cityToGeocode(self, city: str) -> (float, float):
-        params = {
-            "q": city,
-            "api_key": self.geocoding_api_key
-        }
+        self.soil_base_url = "https://power.larc.nasa.gov/api/temporal/daily/point"
+        
+    def cityToGeocode(self, city: str) -> tuple[float, float]:
+        params = {"q": city, "api_key": self.geocoding_api_key}
         response = requests.get(self.geocoding_base_url, params=params)
         response.raise_for_status()
-        response = response.json()
-        lat = float(response[0]["lat"])
-        lon = float(response[0]["lon"])
-        return lat, lon
+        data = response.json()
         
-    # create polygon & get polygon_id based on the city provided
-    def get_polygonId(self, city: str) -> str:
-        lat, lon = self.cityToGeocode(city)
-        # Define a bounding box around the city (area ~ 300 ha)
-        square = [
-            [lon - 0.01, lat + 0.01],  # Top-left
-            [lon + 0.01, lat + 0.01],  # Top-right
-            [lon + 0.01, lat - 0.01],  # Bottom-right
-            [lon - 0.01, lat - 0.01],  # Bottom-left
-            [lon - 0.01, lat + 0.01]   # Close the polygon
-        ]
-        print(square)
-        headers = { "Content-Type": "application/json" }
-        params = {
-            "appid": self.agro_api_key,
-        }
-        
-        # GeoJSON data
-        geo_json = {  
-            "name":f"{city}'s Polygon", 
-             "geo_json": { 
-                "type":"Feature",
-                "geometry": {
-                    "type":"Polygon", 
-                    "coordinates":[square]      
-                }   
-            }
-        }
-        # create a polygon
-        response = requests.post(self.agro_polygon_url, params=params, headers=headers, json=geo_json)
-        response.raise_for_status()
-        response = response.json()
-        return response['id']
-    
+        if not data:
+            raise Exception(f"No coordinates found for city: {city}")
+            
+        return float(data[0]["lat"]), float(data[0]["lon"])
+
     def get_soil_data(self, city: str) -> dict:
-        """
-            Get soil data for a specific city
-            Returns formatted data suitable for ML processing
-        """
-        polygon_id = self.get_polygonId(city)
-        params = {
-            "polyid": polygon_id,
-            "appid": self.agro_api_key
-        }
-
-        # fetch data
-        response = requests.get(self.agro_soil_url)
-        response.raise_for_status()
-        response = response.json()
-        processed_data = {
-            "moisture": response["moisture"],
-            "surface_temperature": response["t0"],
-            "temperature_on_10cm_depth": response["t10"],
-            "timestamp": response["dt"],
-        }
-
-        # delete the polygon to save api calls
-        requests.delete(f"{self.agro_polygon_url}/{polygon_id}", params=params.pop("polyid"))
-        return processed_data
-
-# Test code
-# soil_service = SoilService()
-# print(soil_service.get_soil_data("London"))
+        try:
+            lat, lon = self.cityToGeocode(city)
+            
+            params = {
+                "parameters": "GWETPROF,GWETROOT,GWETTOP,TSOIL1,TSOIL2",
+                "community": "AG",
+                "longitude": lon,
+                "latitude": lat,
+                "start": "20240130",
+                "end": "20240131",
+                "format": "JSON"
+            }
+            
+            response = requests.get(self.soil_base_url, params=params)
+            response.raise_for_status()
+            data = response.json()
+            
+            if "properties" not in data:
+                raise Exception(f"No soil data available for coordinates: {lat}, {lon}")
+                
+            daily_data = data["properties"]["parameter"]
+            current_date = list(daily_data["TSOIL1"].keys())[0]  # Get most recent date
+            
+            return {
+                "surface_moisture": round(daily_data["GWETTOP"][current_date] * 100, 1),
+                "root_moisture": round(daily_data["GWETROOT"][current_date] * 100, 1),
+                "deep_moisture": round(daily_data["GWETPROF"][current_date] * 100, 1),
+                "surface_temp": round(daily_data["TSOIL1"][current_date], 1),
+                "subsurface_temp": round(daily_data["TSOIL2"][current_date], 1),
+                "location": {"lat": lat, "lon": lon}
+            }
+            
+        except Exception as e:
+            raise Exception(f"Failed to get soil data: {str(e)}")
