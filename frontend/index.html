@@ -6,7 +6,6 @@
     <title>Agri Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <style>
-        /* Base styles */
         * {
             margin: 0;
             padding: 0;
@@ -14,13 +13,11 @@
             font-family: Arial, sans-serif;
         }
 
-        /* Layout */
         .dashboard-container {
             display: flex;
             min-height: 100vh;
         }
 
-        /* Sidebar */
         .sidebar {
             width: 280px;
             background-color: #1a1a1a;
@@ -58,7 +55,6 @@
             color: white;
         }
 
-        /* Main Content */
         .main-content {
             margin-left: 280px;
             padding: 2rem;
@@ -66,7 +62,6 @@
             background-color: #f3f4f6;
         }
 
-        /* Location Selector */
         .location-selector {
             margin-bottom: 2rem;
             display: flex;
@@ -74,24 +69,16 @@
             max-width: 500px;
         }
 
-        #city-input {
+        .location-selector select {
             flex: 1;
             padding: 0.75rem 1rem;
             border: 2px solid #e5e7eb;
             border-radius: 0.5rem;
             font-size: 1rem;
-        }
-
-        .search-button {
-            padding: 0.75rem 1.5rem;
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
+            background: white;
             cursor: pointer;
         }
 
-        /* Header */
         .overview-header {
             margin-bottom: 2rem;
         }
@@ -106,7 +93,6 @@
             color: #6b7280;
         }
 
-        /* Quick Stats */
         .quick-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -124,26 +110,6 @@
             gap: 1rem;
         }
 
-        .stat-icon {
-            font-size: 2rem;
-            padding: 1rem;
-            background: #f3f4f6;
-            border-radius: 0.5rem;
-        }
-
-        .stat-info h4 {
-            color: #6b7280;
-            font-size: 0.875rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-value {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: #1f2937;
-        }
-
-        /* Metrics Grid */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -151,7 +117,6 @@
             margin-bottom: 2rem;
         }
 
-        /* Cards */
         .card {
             background: white;
             border-radius: 0.5rem;
@@ -164,113 +129,98 @@
             margin-bottom: 1rem;
         }
 
-        /* Chart Container */
         .chart-container {
             height: 300px;
             position: relative;
         }
 
-        /* Distribution Chart */
-        #distribution-chart {
-            position: relative;
-            width: 200px;
-            height: 200px;
-            margin: 2rem auto;
-        }
-
-        .donut-chart {
-            width: 100%;
-            height: 100%;
-            border: 30px solid #2563eb;
-            border-right-color: #22c55e;
-            border-bottom-color: #eab308;
-            border-left-color: #ef4444;
-            border-radius: 50%;
-            position: relative;
-        }
-
-        .donut-hole {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100px;
-            height: 100px;
-            background: white;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        /* News Container */
         .alert-item {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             padding: 1rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
             background: #f3f4f6;
             border-radius: 0.5rem;
+            transition: background-color 0.2s;
         }
 
-        .alert-icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 0.75rem;
+        .alert-item:hover {
+            background: #e5e7eb;
+        }
+
+        .news-content {
+            flex: 1;
+        }
+
+        .news-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+            text-decoration: none;
+            display: block;
+        }
+
+        .news-title:hover {
             color: #2563eb;
         }
 
-        /* Mobile Menu */
-        .mobile-menu-btn {
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 1001;
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            display: none;
+        .news-description {
+            color: #4b5563;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
         }
 
-        .hamburger {
-            width: 24px;
-            height: 20px;
-            position: relative;
+        .news-meta {
+            font-size: 0.75rem;
+            color: #6b7280;
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .hamburger span {
-            display: block;
-            width: 100%;
-            height: 2px;
-            background-color: white;
-            transition: all 0.3s ease-in-out;
+        .separator {
+            color: #9ca3af;
         }
 
-        /* Overlay */
-        .overlay {
+        .loading-spinner {
             display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-            pointer-events: none;
         }
 
-        .overlay.active {
-            display: block;
-            opacity: 1;
-            pointer-events: auto;
+        .loading-spinner.active {
+            display: flex;
+            justify-content: center;
+            padding: 1rem;
         }
 
-        /* Responsive Styles */
+        .loading-spinner div {
+            width: 2rem;
+            height: 2rem;
+            border: 4px solid #2563eb;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .error-message {
+            background-color: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
@@ -286,24 +236,59 @@
                 padding: 1rem;
             }
 
-            .mobile-menu-btn {
-                display: block;
-            }
-
             .metrics-grid {
                 grid-template-columns: 1fr;
             }
 
-            .location-selector {
+            .mobile-menu-btn {
+                display: block;
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 1001;
+                background: #2563eb;
+                color: white;
+                border: none;
+                padding: 0.75rem;
+                border-radius: 0.5rem;
+                cursor: pointer;
+            }
+
+            .hamburger {
+                width: 24px;
+                height: 20px;
+                position: relative;
+                display: flex;
                 flex-direction: column;
+                justify-content: space-between;
             }
 
-            .quick-stats {
-                grid-template-columns: 1fr;
+            .hamburger span {
+                display: block;
+                width: 100%;
+                height: 2px;
+                background-color: white;
+                transition: all 0.3s ease-in-out;
             }
 
-            .chart-container {
-                height: 250px;
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+                opacity: 0;
+                transition: opacity 0.3s ease-in-out;
+                pointer-events: none;
+            }
+
+            .overlay.active {
+                display: block;
+                opacity: 1;
+                pointer-events: auto;
             }
         }
     </style>
@@ -316,7 +301,6 @@
                 <li><a href="index.html">Dashboard</a></li>
                 <li><a href="soil-data.html">Soil Data</a></li>
                 <li><a href="weather-data.html">Weather Data</a></li>
-                <li><a href="disease-detection.html">Disease Detection</a></li>
                 <li><a href="yield-prediction.html">Yield Prediction</a></li>
                 <li><a href="resources.html">Resources</a></li>
                 <li><a href="news-alerts.html">News & Alerts</a></li>
@@ -325,12 +309,22 @@
 
         <main class="main-content">
             <div class="location-selector">
-                <input type="text" id="city-input" placeholder="Enter US City">
-                <button class="search-button">Search</button>
+                <select id="locationSelect" onchange="fetchData()">
+                    <option value="">Select a location</option>
+                    <option value="34.0522,-118.2437">Los Angeles, USA</option>
+                    <option value="31.2304,121.4737">Shanghai, China</option>
+                    <option value="-23.5505,-46.6333">São Paulo, Brazil</option>
+                    <option value="30.0444,31.2357">Cairo, Egypt</option>
+                    <option value="28.6139,77.2090">New Delhi, India</option>
+                    <option value="36.7378,-119.7871">Fresno, USA</option>
+                    <option value="35.6762,139.6503">Tokyo, Japan</option>
+                    <option value="52.5200,13.4050">Berlin, Germany</option>
+                    <option value="-33.8688,151.2093">Sydney, Australia</option>
+                </select>
             </div>
 
             <div class="overview-header">
-                <h2>Agricultural Insights for <span id="selected-city">Select a city</span></h2>
+                <h2>Agricultural Insights for <span id="selected-city">Select a location</span></h2>
                 <span>Local Agricultural Dashboard</span>
             </div>
 
@@ -360,39 +354,26 @@
 
             <div class="metrics-grid">
                 <div class="card">
-                    <h3>Weather</h3>
+                    <h3>Weather Forecast</h3>
                     <div class="chart-container">
                         <canvas id="weather-chart"></canvas>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h3>Soil</h3>
+                    <h3>Soil Metrics</h3>
                     <div class="chart-container">
                         <canvas id="soil-chart"></canvas>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3>Price</h3>
-                    <div class="chart-container">
-                        <canvas id="price-chart"></canvas>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3>Distribution</h3>
-                    <div id="distribution-chart">
-                        <div class="donut-chart"></div>
-                        <div class="donut-hole"></div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h3>News</h3>
+                <h3>Latest Agricultural News (Past Week)</h3>
                 <div id="news-container">
-                    <!-- News items will be dynamically inserted here -->
+                    <div class="loading-spinner">
+                        <div></div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -407,99 +388,356 @@
     </button>
     <div class="overlay"></div>
 
+    <script src="assets/js/news-service.js"></script>
     <script>
-        // Initialize charts
-        function initializeCharts() {
-            const chartConfigs = {
-                weather: {
-                    id: 'weather-chart',
-                    data: [20, 22, 25, 23, 21, 19],
-                    label: 'Temperature'
-                },
-                soil: {
-                    id: 'soil-chart',
-                    data: [45, 42, 40, 38, 43, 41],
-                    label: 'Moisture'
-                },
-                price: {
-                    id: 'price-chart',
-                    data: [100, 120, 115, 130, 125, 135],
-                    label: 'Market Price'
+        let weatherChart = null;
+        let soilChart = null;
+
+        async function fetchData() {
+            const locationSelect = document.getElementById('locationSelect');
+            const coordinates = locationSelect.value;
+            if (!coordinates) return;
+
+            const selectedLocation = locationSelect.options[locationSelect.selectedIndex].text;
+            const city = selectedLocation.split(',')[0]; // Extract city name
+            document.getElementById('selected-city').textContent = selectedLocation;
+
+            try {
+                const [lat, lon] = coordinates.split(',');
+                
+                // Fetch weather data
+                console.log('Fetching weather data for:', city);
+                const weatherResponse = await fetch(`http://localhost:8000/api/v1/weather/${encodeURIComponent(city)}`);
+                if (!weatherResponse.ok) {
+                    throw new Error('Weather data fetch failed');
                 }
+                const weatherResult = await weatherResponse.json();
+                const weatherData = weatherResult.data;
+
+                // Convert temperature from Celsius to Fahrenheit for display
+                const tempF = (weatherData.temperature * 9/5) + 32;
+                document.getElementById('current-temp').textContent = `${Math.round(tempF)}°F`;
+
+                // Update weather chart with proper temperature conversion
+                const hourlyDataF = weatherData.hourlyData.map(h => ({
+                    ...h,
+                    temperature: (h.temperature * 9/5) + 32
+                }));
+                updateWeatherChart(hourlyDataF);
+
+                // Fetch soil data from backend
+                console.log('Fetching soil data for:', city);
+                const soilResponse = await fetch(`http://localhost:8000/api/v1/soil?city=${encodeURIComponent(city)}`);
+                if (!soilResponse.ok) {
+                    throw new Error('Soil data fetch failed');
+                }
+                const soilData = await soilResponse.json();
+
+                // Update soil metrics
+                const soilCondition = getSoilCondition({
+                    surface_moisture: soilData.surface_moisture,
+                    root_moisture: soilData.root_moisture,
+                    deep_moisture: soilData.deep_moisture
+                });
+                document.getElementById('soil-status').textContent = soilCondition;
+
+                // Update soil chart
+                updateSoilChart({
+                    labels: ['Surface', 'Root Zone', 'Deep Profile', 'Surface Temp', 'Subsurface Temp'],
+                    datasets: [{
+                        label: 'Moisture (%)',
+                        data: [
+                            soilData.surface_moisture,
+                            soilData.root_moisture,
+                            soilData.deep_moisture,
+                            null,
+                            null
+                        ],
+                        borderColor: '#4361ee',
+                        backgroundColor: '#4361ee50'
+                    }, {
+                        label: 'Temperature (°C)',
+                        data: [
+                            null,
+                            null,
+                            null,
+                            soilData.surface_temp,
+                            soilData.subsurface_temp
+                        ],
+                        borderColor: '#f72585',
+                        backgroundColor: '#f7258550'
+                    }]
+                });
+
+                // Get recommended crops based on weather and soil data
+                document.getElementById('recommended-crops').textContent = getRecommendedCrops({
+                    surface_moisture: soilData.surface_moisture,
+                    root_moisture: soilData.root_moisture,
+                    deep_moisture: soilData.deep_moisture
+                }, {
+                    temperature: weatherData.temperature,
+                    humidity: weatherData.humidity
+                });
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'error-message';
+                errorMessage.textContent = `Failed to fetch data: ${error.message}`;
+                document.querySelector('.main-content').prepend(errorMessage);
+                setTimeout(() => errorMessage.remove(), 5000);
+            }
+        }
+
+        function getSoilCondition(soilData) {
+            const avgMoisture = (soilData.surface_moisture + soilData.root_moisture + soilData.deep_moisture) / 3;
+            if (avgMoisture > 60) return 'Very Wet';
+            if (avgMoisture > 45) return 'Moist';
+            if (avgMoisture > 30) return 'Moderate';
+            if (avgMoisture > 15) return 'Dry';
+            return 'Very Dry';
+        }
+
+        function getRecommendedCrops(soilData, weatherData) {
+            const avgMoisture = (soilData.surface_moisture + soilData.root_moisture + soilData.deep_moisture) / 3;
+            const temp = weatherData.temperature;
+            
+            // More sophisticated crop recommendations based on temperature and moisture
+            if (avgMoisture > 60) {
+                if (temp > 25) return 'Rice, Water Spinach';
+                if (temp > 15) return 'Taro, Watercress';
+                return 'Winter Rice, Lotus Root';
+            } else if (avgMoisture > 45) {
+                if (temp > 25) return 'Corn, Soybeans';
+                if (temp > 15) return 'Wheat, Cabbage';
+                return 'Winter Wheat, Kale';
+            } else if (avgMoisture > 30) {
+                if (temp > 25) return 'Tomatoes, Peppers';
+                if (temp > 15) return 'Potatoes, Carrots';
+                return 'Barley, Oats';
+            } else {
+                if (temp > 25) return 'Sorghum, Millet';
+                if (temp > 15) return 'Sunflowers, Safflower';
+                return 'Drought-resistant Wheat';
+            }
+        }
+
+        function getSimulatedWeather(lat, lon, location) {
+            // Base conditions based on latitude
+            const baseTemp = 75 - Math.abs(lat) * 0.5;
+            const isNorthernHemisphere = lat > 0;
+            
+            // City-specific weather patterns
+            const cityPatterns = {
+                "Los Angeles, USA": {
+                    temp: baseTemp + 5,
+                    humidity: 65,
+                    windSpeed: 8,
+                    pressure: 1012,
+                    condition: "Sunny",
+                    variation: { temp: 5, humid: 10 }
+                },
+                // ... rest of city patterns ...
             };
 
-            Object.values(chartConfigs).forEach(config => {
-                const ctx = document.getElementById(config.id)?.getContext('2d');
-                if (ctx) {
-                    new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                            datasets: [{
-                                label: config.label,
-                                data: config.data,
-                                borderColor: '#2563eb',
-                                tension: 0.4
-                            }]
+            const cityPattern = cityPatterns[location];
+            const currentTime = new Date();
+            const hourOfDay = currentTime.getHours();
+
+            // Generate 24-hour forecast
+            const forecast = Array.from({ length: 24 }, (_, i) => {
+                const forecastHour = (hourOfDay + i) % 24;
+                const isDaytime = forecastHour >= 6 && forecastHour <= 18;
+
+                const timeTemp = isDaytime ? 
+                    cityPattern.temp + Math.sin((forecastHour - 6) / 12 * Math.PI) * cityPattern.variation.temp :
+                    cityPattern.temp - cityPattern.variation.temp * 0.5;
+
+                const timeHumidity = cityPattern.humidity + 
+                    (isDaytime ? -1 : 1) * Math.sin((forecastHour - 6) / 12 * Math.PI) * cityPattern.variation.humid;
+
+                return {
+                    time: new Date(currentTime.getTime() + i * 60 * 60 * 1000).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }),
+                    temperature: Math.round(timeTemp * 10) / 10,
+                    humidity: Math.round(Math.min(Math.max(timeHumidity, 30), 95))
+                };
+            });
+
+            return {
+                temperature: cityPattern.temp,
+                humidity: cityPattern.humidity,
+                windSpeed: cityPattern.windSpeed,
+                pressure: cityPattern.pressure,
+                condition: cityPattern.condition,
+                forecast: forecast
+            };
+        }
+
+        function updateWeatherChart(hourlyData) {
+            const ctx = document.getElementById('weather-chart').getContext('2d');
+            
+            if (weatherChart) {
+                weatherChart.destroy();
+            }
+
+            weatherChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: hourlyData.map(h => h.time),
+                    datasets: [{
+                        label: 'Temperature (°F)',
+                        data: hourlyData.map(h => h.temperature),
+                        borderColor: '#4444ff',
+                        tension: 0.4,
+                        fill: false,
+                        yAxisID: 'y-temp'
+                    }, {
+                        label: 'Humidity (%)',
+                        data: hourlyData.map(h => h.humidity),
+                        borderColor: '#22c55e',
+                        tension: 0.4,
+                        fill: false,
+                        yAxisID: 'y-humidity'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    },
+                    scales: {
+                        'y-temp': {
+                            type: 'linear',
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Temperature (°F)'
+                            },
+                            grid: {
+                                color: '#e5e7eb'
+                            }
                         },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    position: 'bottom'
-                                }
+                        'y-humidity': {
+                            type: 'linear',
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Humidity (%)'
+                            },
+                            min: 0,
+                            max: 100,
+                            grid: {
+                                display: false
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: '#e5e7eb'
                             }
                         }
-                    });
+                    }
                 }
             });
         }
 
-        // Add news fetching functionality
-        async function fetchNews() {
-            try {
-                const response = await fetch('http://localhost:8000/api/news/news?category=agriculture');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+        function updateSoilChart(data) {
+            const ctx = document.getElementById('soil-chart').getContext('2d');
+            
+            if (soilChart) {
+                soilChart.destroy();
+            }
+
+            soilChart = new Chart(ctx, {
+                type: 'bar',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Soil Metrics'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#e5e7eb'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: '#e5e7eb'
+                            }
+                        }
+                    }
                 }
-                const newsData = await response.json();
+            });
+        }
+        function getRelativeTime(timestamp) {
+            const now = new Date();
+            const past = new Date(timestamp);
+            const diffInHours = Math.floor((now - past) / (1000 * 60 * 60));
+            return diffInHours < 1 ? 
+                `${Math.floor((now - past) / (1000 * 60))} minutes ago` : 
+                `${diffInHours} hours ago`;
+        }
+
+        async function fetchNews() {
+            const newsContainer = document.getElementById('news-container');
+            console.log('Fetching news...'); // Debug log
+            
+            // Show loading state
+            newsContainer.innerHTML = `
+                <div class="loading-spinner active">
+                    <div></div>
+                </div>
+            `;
+            
+            const newsService = new NewsService();
+            
+            try {
+                const data = await newsService.getNews();
+                console.log('Received news data:', data); // Debug log
+                const articles = data.articles || [];
                 
-                const newsContainer = document.getElementById('news-container');
-                newsContainer.innerHTML = '';
-                
-                newsData.slice(0, 5).forEach(article => {
-                    const newsItem = `
+                newsContainer.innerHTML = articles.length ? 
+                    articles.slice(0, 5).map(article => `
                         <div class="alert-item">
-                            <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="12" y1="8" x2="12" y2="12"></line>
-                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                            </svg>
-                            <span>${article.title}</span>
+                            <div class="news-content">
+                                <a href="${article.url}" target="_blank" class="news-title">${article.title}</a>
+                                <p class="news-description">${article.description || ''}</p>
+                                <div class="news-meta">
+                                    <span>${article.source?.name || 'Unknown Source'}</span>
+                                    <span class="separator">•</span>
+                                    <span>${getRelativeTime(article.publishedAt)}</span>
+                                </div>
+                            </div>
                         </div>
-                    `;
-                    newsContainer.innerHTML += newsItem;
-                });
+                    `).join('') :
+                    '<div class="p-4 text-gray-500 text-center">No news available</div>';
+                    
             } catch (error) {
-                console.error('Error fetching news:', error);
-                const newsContainer = document.getElementById('news-container');
+                console.error('Error details:', error); // Debug log
                 newsContainer.innerHTML = `
-                    <div class="alert-item error">
-                        <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="8" x2="12" y2="12"></line>
-                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                        </svg>
-                        <span>Unable to load news at this time. Please try again later.</span>
-                    </div>
-                `;
+                    <div class="error-message">
+                        Failed to load news: ${error.message}
+                    </div>`;
             }
         }
 
-        // Initialize all charts and fetch news when the page loads
+        // Initialize mobile menu and news functionality
         document.addEventListener('DOMContentLoaded', () => {
-            // Mobile menu functionality
             const menuBtn = document.querySelector('.mobile-menu-btn');
             const sidebar = document.querySelector('.sidebar');
             const overlay = document.querySelector('.overlay');
@@ -516,8 +754,43 @@
                 overlay.classList.remove('active');
             });
 
-            initializeCharts();
+            // Initialize empty charts
+            updateWeatherChart([]);
+            updateSoilChart({
+                labels: ['Surface', 'Root Zone', 'Deep Profile', 'Surface Temp', 'Subsurface Temp'],
+                datasets: [{
+                    label: 'Moisture (%)',
+                    data: [0, 0, 0, 0, 0],
+                    borderColor: '#4361ee',
+                    backgroundColor: '#4361ee50'
+                }, {
+                    label: 'Temperature (°C)',
+                    data: [0, 0, 0, 0, 0],
+                    borderColor: '#f72585',
+                    backgroundColor: '#f7258550'
+                }]
+            });
+
+            // Initialize news fetching
             fetchNews();
+            setInterval(fetchNews, 5 * 60 * 1000);
+
+            // Get initial location data if available
+            const locationSelect = document.getElementById('locationSelect');
+            if (locationSelect.value) {
+                fetchData();
+            }
+        });
+
+        // Add error handling for charts
+        window.addEventListener('error', function(e) {
+            if (e.target.tagName === 'CANVAS') {
+                console.error('Chart error:', e);
+                e.target.parentElement.innerHTML = `
+                    <div class="error-message">
+                        Failed to load chart. Please try refreshing the page.
+                    </div>`;
+            }
         });
     </script>
 </body>

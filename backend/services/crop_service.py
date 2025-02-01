@@ -1,7 +1,8 @@
 import os
-from dotenv import load_dotenv
 
 import requests
+from dotenv import load_dotenv
+
 
 class CropService:
     def __init__(self):
@@ -38,10 +39,18 @@ class CropService:
         response = response.json()
 
         processed_data = {
-            "toxicity": response["data"]["main_species"]["specifications"]["toxicity"],
-            "light_needs": response["data"]["main_species"]["growth"]["light"],
-            "air_humidity_needs": response["data"]["main_species"]["growth"]["atmospheric_humidity"],
-            "soil_ph_range": [response["data"]["main_species"]["growth"]["ph_minimum"], response["data"]["main_species"]["growth"]["ph_maximum"]],
+            "toxicity": response["data"]["main_species"]["specifications"].get("toxicity", 0),
+            "light_needs": response["data"]["main_species"]["growth"].get("light", 0),
+            "air_humidity_needs": response["data"]["main_species"]["growth"].get("atmospheric_humidity", 0),
+            "soil_ph_range": [
+                response["data"]["main_species"]["growth"].get("ph_minimum", 6.0),
+                response["data"]["main_species"]["growth"].get("ph_maximum", 7.0)
+            ],
+            "temperature_range": [
+                response["data"]["main_species"]["growth"].get("minimum_temperature", 15),
+                response["data"]["main_species"]["growth"].get("maximum_temperature", 30)
+            ],
+            "growth_months": response["data"]["main_species"]["growth"].get("growth_months", []),
         }
         return processed_data
 
