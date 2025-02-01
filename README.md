@@ -54,12 +54,7 @@ A modern web application for agricultural monitoring and analysis, combining wea
 ### Backend
 - Python
 - FastAPI framework
-- SQLAlchemy ORM
-- PostgreSQL database
-- JWT authentication
 
-## Installation
-
-1. Clone the repository:
-```bash
-git clone [repository-url]
+### Machine Learning
+- Pytorch
+- Sci-kit learn
