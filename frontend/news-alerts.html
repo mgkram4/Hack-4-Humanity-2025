@@ -293,29 +293,9 @@
             </div>
 
             <div class="news-grid">
-                <div class="news-section">
-                    <div class="news-item">
-                        <span class="alert-priority priority-high">High Priority</span>
-                        <div class="news-date">March 20, 2024</div>
-                        <h3 class="news-title">Severe Weather Warning: Heavy Rainfall Expected</h3>
-                        <p class="news-content">Heavy rainfall predicted for the next 48 hours. Farmers advised to take necessary precautions to protect crops and ensure proper drainage.</p>
-                        <a href="#" class="read-more">Read More →</a>
-                    </div>
-
-                    <div class="news-item">
-                        <span class="alert-priority priority-medium">Medium Priority</span>
-                        <div class="news-date">March 19, 2024</div>
-                        <h3 class="news-title">New Pest Control Guidelines Released</h3>
-                        <p class="news-content">Updated guidelines for managing common crop pests using integrated pest management techniques.</p>
-                        <a href="#" class="read-more">Read More →</a>
-                    </div>
-
-                    <div class="news-item">
-                        <span class="alert-priority priority-low">Low Priority</span>
-                        <div class="news-date">March 18, 2024</div>
-                        <h3 class="news-title">Agricultural Market Update</h3>
-                        <p class="news-content">Weekly market prices and demand forecasts for major crops in the region.</p>
-                        <a href="#" class="read-more">Read More →</a>
+                <div class="news-section" id="news-container">
+                    <div class="loading-spinner">
+                        <div></div>
                     </div>
                 </div>
 
@@ -340,26 +320,59 @@
     </button>
     <div class="overlay"></div>
 
+    <script src="assets/js/news-service.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Mobile menu functionality
-            const menuBtn = document.querySelector('.mobile-menu-btn');
-            const sidebar = document.querySelector('.sidebar');
-            const overlay = document.querySelector('.overlay');
-
-            menuBtn?.addEventListener('click', () => {
-                sidebar.classList.toggle('active');
-                menuBtn.classList.toggle('active');
-                overlay.classList.toggle('active');
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             });
+        }
 
-            overlay?.addEventListener('click', () => {
-                sidebar.classList.remove('active');
-                menuBtn.classList.remove('active');
-                overlay.classList.remove('active');
-            });
+        async function fetchAndDisplayNews() {
+            const newsContainer = document.getElementById('news-container');
+            const newsService = new NewsService();
+            
+            try {
+                const data = await newsService.getNews();
+                const articles = data.articles || [];
+                
+                // Count priorities for the chart
+                const priorityCounts = {
+                    high: 0,
+                    medium: 0,
+                    low: 0
+                };
+                
+                // Generate news items HTML
+                newsContainer.innerHTML = articles.map(article => {
+                    priorityCounts[article.priority]++;
+                    return `
+                        <div class="news-item">
+                            <span class="alert-priority priority-${article.priority}">${article.priority.charAt(0).toUpperCase() + article.priority.slice(1)} Priority</span>
+                            <div class="news-date">${formatDate(article.publishedAt)}</div>
+                            <h3 class="news-title">${article.title}</h3>
+                            <p class="news-content">${article.description}</p>
+                            <a href="${article.url}" class="read-more">Read More →</a>
+                        </div>
+                    `;
+                }).join('');
+                
+                // Update the chart
+                updateAlertsChart(priorityCounts);
+                
+            } catch (error) {
+                console.error('Error loading news:', error);
+                newsContainer.innerHTML = `
+                    <div class="error-message">
+                        Failed to load news: ${error.message}
+                    </div>
+                `;
+            }
+        }
 
-            // Initialize alerts chart
+        function updateAlertsChart(priorityCounts) {
             const ctx = document.getElementById('alerts-chart')?.getContext('2d');
             if (ctx) {
                 new Chart(ctx, {
@@ -367,7 +380,11 @@
                     data: {
                         labels: ['High Priority', 'Medium Priority', 'Low Priority'],
                         datasets: [{
-                            data: [2, 3, 5],
+                            data: [
+                                priorityCounts.high,
+                                priorityCounts.medium,
+                                priorityCounts.low
+                            ],
                             backgroundColor: ['#dc2626', '#d97706', '#059669'],
                             borderWidth: 0
                         }]
@@ -386,6 +403,28 @@
                     }
                 });
             }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Mobile menu functionality
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.overlay');
+
+            menuBtn?.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                menuBtn.classList.toggle('active');
+                overlay.classList.toggle('active');
+            });
+
+            overlay?.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+                menuBtn.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+
+            // Fetch and display news
+            fetchAndDisplayNews();
         });
     </script>
 </body>
