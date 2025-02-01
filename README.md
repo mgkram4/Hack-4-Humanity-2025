@@ -1,125 +1,65 @@
-# 🌾 Agricultural Intelligence Dashboard
+# Agricultural Dashboard
 
-A comprehensive agricultural monitoring and analytics platform that combines real-time data visualization with machine learning insights for smart farming.
+A modern web application for agricultural monitoring and analysis, combining weather data, soil metrics, disease detection, and yield prediction capabilities.
 
-## 📌 Overview
+## Features
 
-The Agricultural Intelligence Dashboard is a full-stack application that helps farmers and agricultural professionals monitor crucial farming parameters, predict yields, detect plant diseases, and optimize resource utilization through advanced analytics and machine learning.
-
-## 🚀 Features
-
-### Data Monitoring
-- Real-time soil data analytics
-- Weather condition tracking
-- Agricultural market data
-- Plant health monitoring
-- Resource utilization metrics
-
-### ML-Powered Insights
-- Plant disease detection
-- Crop yield prediction
-- Resource optimization recommendations
-- Smart farming suggestions
-
-### Dashboard Features
-- Interactive data visualization
-- Real-time data streaming
-- Custom alerts and notifications
+### Dashboard Overview
+- Real-time weather monitoring
+- Soil quality analysis
+- Crop distribution visualization
 - Agricultural news feed
-- Resource management tools
+- Mobile-responsive design
 
-## 💻 Tech Stack
+### Key Components
+1. **Weather Data**
+   - Temperature and humidity tracking
+   - Historical weather data visualization
+   - City-based weather search
+   - Auto-refresh every 5 minutes
 
-### Backend
-- **Framework:** FastAPI
-- **ML Framework:** PyTorch
-- **Language:** Python 3.x
-- **Database:** [To be decided]
+2. **Soil Analysis**
+   - NASA soil data integration
+   - Moisture levels monitoring
+   - Temperature tracking
+   - Multi-depth soil analysis
+
+3. **Disease Detection**
+   - AI-powered plant disease detection
+   - Image upload capability
+   - Analysis history tracking
+   - Real-time disease identification
+
+4. **Yield Prediction**
+   - Crop yield forecasting
+   - Growth factor analysis
+   - Location-based predictions
+   - Recommendation engine
+
+5. **News & Alerts**
+   - Agricultural news aggregation
+   - Priority-based alert system
+   - Real-time updates
+   - Interactive news feed
+
+## Technical Stack
 
 ### Frontend
-- **Framework:** HTML/JavaScript (or Next.js)
-- **Visualization:** Chart.js
-- **Styling:** CSS3
+- HTML5
+- CSS3
+- JavaScript (Vanilla)
+- Chart.js for data visualization
+- Responsive design with CSS Grid/Flexbox
 
-## 🛠️ Installation
+### Backend
+- Python
+- FastAPI framework
+- SQLAlchemy ORM
+- PostgreSQL database
+- JWT authentication
 
-1. Clone the repository
+## Installation
+
+1. Clone the repository:
 ```bash
 git clone [repository-url]
-```
-
-2. Install backend dependencies
-```bash
-cd backend
-pip install -r requirements.txt
-```
-
-3. Start the backend server
-```bash
-python main.py
-```
-
-4. Open the frontend
-```bash
-cd frontend
-
-# If using basic HTML/JS
-open index.html
-
-# If using Next.js
-npm install
-npm run dev
-```
-
-## 📊 API Endpoints
-
-### Data Endpoints
-- `GET /api/soil-data` - Retrieve soil metrics
-- `GET /api/weather-data` - Get weather information
-- `GET /api/agriculture-data` - Access agricultural statistics
-- `GET /api/plant-health` - Plant health information
-
-### ML Model Endpoints
-- `POST /api/disease-detection` - Plant disease detection
-- `POST /api/yield-prediction` - Crop yield predictions
-- `GET /api/resource-optimization` - Resource optimization suggestions
-
-### Information Endpoints
-- `GET /api/news` - Agricultural news feed
-- `GET /api/alerts` - System alerts and notifications
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch
-```bash
-git checkout -b feature/AmazingFeature
-```
-3. Commit your changes
-```bash
-git commit -m 'Add some AmazingFeature'
-```
-4. Push to the branch
-```bash
-git push origin feature/AmazingFeature
-```
-5. Open a Pull Request
-
-## 📝 License
-
-[Choose appropriate license]
-
-## 👥 Team
-
-- [Team Member 1]
-- [Team Member 2]
-- [Team Member 3]
-
-## 📞 Contact
-
-For questions and support, please contact [contact information]
-
-## 🔄 Project Status
-
-This project is under active development. Features and implementations may change.
-
