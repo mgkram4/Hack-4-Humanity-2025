@@ -1,9 +1,15 @@
-# Agricultural Dashboard
+# Farm Vision 🌾
+> Winner of Best AI/ML Implementation at Hack for Humanity 2025!
 
-A modern web application for agricultural monitoring and analysis, combining weather data, soil metrics, disease detection, and yield prediction capabilities.
+A modern web application for agricultural monitoring and analysis, combining weather data, soil metrics, disease detection, and yield prediction capabilities powered by artificial intelligence.
 
-## Features
+## 🏆 Achievements
+- **Hack for Humanity 2025**
+  - Winner: Best use of AI/ML
+  - Placed 14th - 42rd overall
+  - Participation award
 
+## 🌟 Features
 ### Dashboard Overview
 - Real-time weather monitoring
 - Soil quality analysis
@@ -42,8 +48,7 @@ A modern web application for agricultural monitoring and analysis, combining wea
    - Real-time updates
    - Interactive news feed
 
-## Technical Stack
-
+## 💻 Technical Stack
 ### Frontend
 - HTML5
 - CSS3
@@ -56,5 +61,9 @@ A modern web application for agricultural monitoring and analysis, combining wea
 - FastAPI framework
 
 ### Machine Learning
-- Pytorch
-- Sci-kit learn
+- PyTorch
+- Scikit-learn
+
+## 👥 Team
+- Mark Garica Garcia
+- Jasper Liu
