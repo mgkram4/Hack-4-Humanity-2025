@@ -82,3 +82,8 @@ yarn-error.log*
 *.model
 *.weights
 datasets/ 
+# local frontend secrets
+frontend/assets/js/config.js
+.env
+.env.*
+!.env.example
