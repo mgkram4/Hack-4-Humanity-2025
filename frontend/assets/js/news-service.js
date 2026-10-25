@@ -1,7 +1,7 @@
 class NewsService {
     constructor() {
         this.newsBaseUrl = "https://gnews.io/api/v4/search";
-        this.newsApiKey = "REMOVED_GNEWS_API_KEY";
+        this.newsApiKey = (window.APP_CONFIG && window.APP_CONFIG.GNEWS_API_KEY) || ""; // set in assets/js/config.js (gitignored)
     }
 
     // Helper to assign priority based on article content
